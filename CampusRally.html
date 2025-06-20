@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusRally - Find Tennis Partners & Courts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { 
+      font-family: 'Inter', Arial, sans-serif; 
+      margin: 0; 
+      background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
+      background-attachment: fixed;
+      color: #222; 
+      min-height: 100vh;
+    }
+    
+    .navbar { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 1rem 2rem; 
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+      position: sticky; 
+      top: 0; 
+      z-index: 10; 
+      border-bottom: 3px solid #facc15;
+    }
+    
+    .navbar .logo { 
+      font-weight: 700; 
+      font-size: 1.5rem; 
+      background: linear-gradient(45deg, #16a34a, #facc15);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .navbar .logo::before {
+      content: "🎾";
+      font-size: 1.3rem;
+      -webkit-text-fill-color: initial;
+    }
+    
+    .navbar a { 
+      margin: 0 1rem; 
+      text-decoration: none; 
+      color: #1f2937; 
+      font-weight: 600; 
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar a.active, .navbar a:hover { 
+      background: linear-gradient(45deg, #16a34a, #22c55e);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+    
+    .main { 
+      max-width: 1200px; 
+      margin: 2rem auto; 
+      padding: 1rem; 
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hero-section {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hero-section h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #16a34a, #facc15, #16a34a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hero-section p {
+      font-size: 1.2rem;
+      color: #4b5563;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    
+    .home-btns { 
+      display: flex; 
+      gap: 2rem; 
+      justify-content: center; 
+      margin: 2rem 0; 
+      flex-wrap: wrap;
+    }
+    
+    .main-btn { 
+      background: linear-gradient(45deg, #16a34a, #22c55e);
+      color: #fff; 
+      border: none; 
+      border-radius: 50px; 
+      padding: 1.5rem 3rem; 
+      font-size: 1.3rem; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .main-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .main-btn:hover::before {
+      left: 100%;
+    }
+    
+    .main-btn:hover { 
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+    }
+    
+    .section { 
+      display: none; 
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .section.active { display: block; }
+    
+    .section h2 {
+      color: #16a34a;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .filters { 
+      display: flex; 
+      gap: 1rem; 
+      flex-wrap: wrap; 
+      margin-bottom: 2rem; 
+      padding: 1.5rem;
+      background: rgba(250, 204, 21, 0.1);
+      border-radius: 15px;
+      border: 2px solid rgba(250, 204, 21, 0.3);
+    }
+    
+    .filters select, .filters input { 
+      padding: 0.75rem; 
+      border-radius: 25px; 
+      border: 2px solid #e5e7eb;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .filters select:focus, .filters input:focus {
+      outline: none;
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    }
+    
+    .filters button {
+      background: linear-gradient(45deg, #facc15, #fbbf24);
+      color: #1f2937;
+      border: none;
+      border-radius: 25px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .filters button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+    
+    .directory { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+      gap: 2rem; 
+    }
+    
+    .profile-card { 
+      background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+      border-radius: 20px; 
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); 
+      padding: 1.5rem; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 0.75rem;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(45deg, #16a34a, #facc15);
+    }
+    
+    .profile-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+      border-color: rgba(22, 163, 74, 0.3);
+    }
+    
+    .profile-card h3 { 
+      margin: 0; 
+      font-size: 1.4rem; 
+      color: #16a34a;
+      font-weight: 700;
+    }
+    
+    .profile-card .level { 
+      font-size: 1rem; 
+      background: linear-gradient(45deg, #16a34a, #22c55e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700; 
+    }
+    
+    .profile-card .bio { 
+      font-size: 0.95rem; 
+      color: #6b7280; 
+      font-style: italic;
+      background: rgba(250, 204, 21, 0.1);
+      padding: 0.75rem;
+      border-radius: 10px;
+    }
+    
+    .profile-card button { 
+      margin-top: 1rem; 
+      background: linear-gradient(45deg, #16a34a, #22c55e);
+      color: #fff; 
+      border: none; 
+      border-radius: 25px; 
+      padding: 0.75rem 1.5rem; 
+      font-weight: 700; 
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .profile-card button:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(22, 163, 74, 0.3);
+    }
+    
+    .court-list { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+      gap: 2rem; 
+    }
+    
+    .court-card { 
+      background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%);
+      border-radius: 20px; 
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); 
+      padding: 1.5rem;
+      border-left: 5px solid #16a34a;
+      transition: all 0.3s ease;
+    }
+    
+    .court-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .court-card h4 { 
+      margin: 0 0 1rem 0; 
+      color: #16a34a;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    
+    .court-card .surface { 
+      font-size: 1rem; 
+      background: linear-gradient(45deg, #facc15, #fbbf24);
+      color: #1f2937;
+      font-weight: 700;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      display: inline-block;
+      margin: 0.5rem 0;
+    }
+    
+    .court-card .notes { 
+      font-size: 0.95rem; 
+      color: #6b7280; 
+      background: rgba(250, 204, 21, 0.1);
+      padding: 0.75rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+    
+    .form-section { 
+      background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%);
+      border-radius: 20px; 
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); 
+      padding: 2rem; 
+      max-width: 600px; 
+      margin: 2rem auto; 
+      border-top: 5px solid #16a34a;
+    }
+    
+    .form-section h3 { 
+      margin-top: 0; 
+      color: #16a34a;
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    
+    .form-section label { 
+      display: block; 
+      margin: 1.5rem 0 0.5rem; 
+      font-weight: 600;
+      color: #374151;
+    }
+    
+    .form-section input, .form-section select, .form-section textarea { 
+      width: 100%; 
+      padding: 0.75rem 1rem; 
+      border-radius: 12px; 
+      border: 2px solid #e5e7eb; 
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .form-section input:focus, .form-section select:focus, .form-section textarea:focus {
+      outline: none;
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    }
+    
+    .form-section button { 
+      background: linear-gradient(45deg, #16a34a, #22c55e);
+      color: #fff; 
+      border: none; 
+      border-radius: 25px; 
+      padding: 0.75rem 2rem; 
+      font-weight: 700; 
+      cursor: pointer; 
+      margin-top: 1.5rem;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .form-section button:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(22, 163, 74, 0.3);
+    }
+    
+
+     
+     .court-info {
+       background: rgba(22, 163, 74, 0.1);
+       border-radius: 12px;
+       padding: 1rem;
+       margin: 1rem 0;
+       border-left: 4px solid #16a34a;
+     }
+     
+     .court-info h5 {
+       color: #16a34a;
+       margin: 0 0 0.5rem 0;
+       font-weight: 700;
+     }
+     
+
+    
+    @media (max-width: 768px) {
+      .main { padding: 0.5rem; }
+      .home-btns { flex-direction: column; gap: 1.2rem; align-items: center; }
+      .navbar { flex-direction: column; gap: 1rem; padding: 1rem; }
+      .hero-section h1 { font-size: 2rem; }
+      .hero-section { padding: 2rem 1rem; }
+      .filters { flex-direction: column; }
+      .directory { grid-template-columns: 1fr; }
+      .court-list { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">CampusRally</div>
+    <div>
+      <a href="#" class="nav-link active" data-section="home">Home</a>
+      <a href="#" class="nav-link" data-section="find-partner">Find Partner</a>
+      <a href="#" class="nav-link" data-section="find-court">Find Court</a>
+      <a href="#" class="nav-link" data-section="about">About/FAQ</a>
+      <a href="#" class="nav-link" data-section="login">Log In/Sign Up</a>
+    </div>
+  </nav>
+  <div class="main">
+    <!-- Home Section -->
+    <section id="home" class="section active">
+      <div class="hero-section">
+        <h1>Find High School & College Tennis Mentors</h1>
+        <p>CampusRally connects high school and college students with tennis mentors on their campuses. Find experienced players who can help improve your game, practice together, and share court access!</p>
+        <div class="home-btns">
+          <button class="main-btn" onclick="showSection('find-partner')">🎾 Find High School/College Tennis Mentors</button>
+        </div>
+      </div>
+    </section>
+    <!-- Find Partner Section -->
+    <section id="find-partner" class="section">
+      <h2>Find Tennis Mentors</h2>
+      <div class="filters">
+        <input type="text" id="searchName" placeholder="Search by name or nickname" oninput="filterProfiles()" />
+        <select id="filterSchool" onchange="filterProfiles()">
+          <option value="">All Schools</option>
+        </select>
+        <select id="filterSchoolType" onchange="filterProfiles()">
+          <option value="">All School Types</option>
+          <option>Public</option>
+          <option>Private</option>
+        </select>
+        <select id="filterLevel" onchange="filterProfiles()">
+          <option value="">All Skill Levels</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+          <option>USTA/UTR</option>
+        </select>
+        <select id="filterAvailability" onchange="filterProfiles()">
+          <option value="">All Availabilities</option>
+          <option>Weekdays</option>
+          <option>Weekends</option>
+          <option>Evenings</option>
+          <option>Mornings</option>
+        </select>
+        <button onclick="showSection('profile-form')">+ Create Mentor Profile</button>
+      </div>
+      <div class="directory" id="profileDirectory"></div>
+    </section>
+    <!-- Find Court Section -->
+    <section id="find-court" class="section">
+      <h2>Find Free Public Outdoor Courts Nearby</h2>
+      
+      <!-- Zip Code Search Section -->
+      <div class="zip-search-container" style="background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); border-left: 5px solid #16a34a;">
+        <h3 style="color: #16a34a; margin-top: 0; text-align: center;">Find Free Public Courts Near You</h3>
+        <p style="text-align: center; color: #6b7280; margin-bottom: 1.5rem; font-size: 0.9rem;">
+          <em>Note: This feature currently supports select zip codes for demonstration. All court information is real and accurate.</em>
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
+          <input type="text" id="zipCodeInput" placeholder="Enter zip code (Example: 10001)" 
+                 style="padding: 1rem; border-radius: 25px; border: 2px solid #e5e7eb; font-size: 1.1rem; width: 200px; text-align: center; font-weight: 600;" 
+                 onkeypress="handleZipCodeKeypress(event)" />
+          <button onclick="searchCourts()" style="background: linear-gradient(45deg, #16a34a, #22c55e); color: white; border: none; border-radius: 25px; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;">
+            🎾 Find Courts
+          </button>
+        </div>
+        <div id="searchStatus" style="text-align: center; margin-top: 1rem; font-style: italic; color: #6b7280;"></div>
+      </div>
+      
+      <!-- Search Results -->
+      <div id="courtResults" style="display: none;">
+        <h3 style="color: #16a34a; text-align: center; margin-bottom: 1.5rem;">Free Public Outdoor Courts Near You</h3>
+        <div id="courtResultsList" class="court-list"></div>
+      </div>
+      
+      <button style="margin-bottom:1.2rem;" onclick="showSection('court-form')">+ Suggest a Court</button>
+      <p style="font-size: 0.9rem; color: #6b7280; font-style: italic; margin-bottom: 1.5rem;">💡 When suggesting a court, please include the zip code to help users find courts in their area</p>
+      <div class="court-list" id="courtList"></div>
+    </section>
+    <!-- Profile Form Section -->
+    <section id="profile-form" class="section form-section">
+      <h3>Create Your Tennis Mentor Profile</h3>
+      <form id="createProfileForm" onsubmit="submitProfile(event)">
+        <label>Name or Nickname</label>
+        <input required name="name" />
+        <label>School</label>
+        <input required name="school" />
+        <label>School Type</label>
+        <select required name="schoolType">
+          <option>Public</option>
+          <option>Private</option>
+        </select>
+        <label>Skill Level</label>
+        <select required name="level" onchange="toggleUTRField(this)">
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+          <option>USTA/UTR</option>
+        </select>
+        <div id="utrField" style="display:none;">
+          <label>USTA/UTR Rating</label>
+          <input name="utrRating" type="number" step="0.1" min="1" max="12" placeholder="Example: 4.5 or 10.2" />
+        </div>
+        <label>Year in School</label>
+        <select required name="year">
+          <option>Freshman</option>
+          <option>Sophomore</option>
+          <option>Junior</option>
+          <option>Senior</option>
+          <option>Graduate</option>
+        </select>
+        <label>Availability</label>
+        <select required name="availability">
+          <option>Weekdays</option>
+          <option>Weekends</option>
+          <option>Evenings</option>
+          <option>Mornings</option>
+        </select>
+        <label>Contact (email or social handle)</label>
+        <input required name="contact" />
+        
+        <h4 style="color:#16a34a; margin-top:2rem;">School Court Information</h4>
+        <label>Court Address</label>
+        <input required name="courtAddress" placeholder="Example: 123 University Ave, Campus Tennis Center" />
+        <label>Number of Courts</label>
+        <input required name="numCourts" type="number" min="1" />
+        <label>Court Open Times</label>
+        <input name="courtHours" placeholder="Example: 6am-10pm weekdays, 8am-8pm weekends" />
+        <label>Court Notes</label>
+        <textarea name="courtNotes" maxlength="100" placeholder="Example: Lights available, bring student ID, key code access, etc."></textarea>
+        
+        <label>Short Bio</label>
+        <textarea name="bio" maxlength="150" placeholder="Example: Former varsity player, patient with beginners, can help with serves and volleys"></textarea>
+        <button type="submit">Create Mentor Profile</button>
+        <button type="button" onclick="showSection('find-partner')" style="background:#ddd; color:#222; margin-left:1rem;">Cancel</button>
+      </form>
+    </section>
+    <!-- Court Suggestion Form Section -->
+    <section id="court-form" class="section form-section">
+      <h3>Suggest a Tennis Court</h3>
+      <form id="suggestCourtForm" onsubmit="submitCourt(event)">
+        <label>School Name</label>
+        <input required name="school" />
+        <label>Address</label>
+        <input required name="address" />
+        <label>Zip Code</label>
+        <input required name="zipCode" type="text" maxlength="5" placeholder="Example: 10001" />
+        <label>Surface Type</label>
+        <select required name="surface">
+          <option>Hard</option>
+          <option>Clay</option>
+          <option>Grass</option>
+          <option>Other</option>
+        </select>
+        <label>Number of Courts</label>
+        <input required name="numCourts" type="number" min="1" />
+        <label>Open Times (if known)</label>
+        <input name="openTimes" />
+        <label>Notes</label>
+        <textarea name="notes" maxlength="100" placeholder="Example: Lights available, bring student ID, etc."></textarea>
+        <button type="submit">Submit Court</button>
+        <button type="button" onclick="showSection('find-court')" style="background:#ddd; color:#222; margin-left:1rem;">Cancel</button>
+      </form>
+    </section>
+    <!-- About/FAQ Section -->
+    <section id="about" class="section">
+      <h2>FAQ</h2>
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">1. What is TennisMatch?</h4>
+          <p>TennisMatch is a platform that connects tennis players with high school or college athletes offering hitting sessions — either for a small fee or as volunteer service. It's designed to make tennis more accessible and affordable for everyone.</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">2. Who can use TennisMatch?</h4>
+          <p>Anyone! Whether you're a beginner looking to rally, a parent seeking affordable practice for your child, or a student-athlete hoping to earn money or volunteer hours, TennisMatch is for you.</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">3. How do I find a hitting partner?</h4>
+          <p>Just enter your location, skill level, and availability. The site will show local student-athletes who match your needs. You can view their profiles, see their experience, and message them directly to set up a session.</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">4. How do I know if the player I book is qualified?</h4>
+          <p>Each student-athlete profile shows their experience level (e.g., varsity team, USTA ranking), user reviews, and whether they're offering paid sessions or volunteer hours. You can also check their school affiliation.</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">5. What's the difference between a paid and a volunteer session?</h4>
+          <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+            <li><strong>Paid sessions:</strong> You book and pay a small fee (typically $15–$30/hour) for a hitting partner.</li>
+            <li><strong>Volunteer sessions:</strong> For younger or beginner players, student-athletes can offer free training to fulfill volunteer hours required by their school.</li>
+          </ul>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">6. How do payments work?</h4>
+          <p>For paid sessions, you'll book directly through the site using a secure payment method. The platform takes a small service fee and ensures the athlete is paid after the session is confirmed.</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">7. Can I track volunteer hours through the platform?</h4>
+          <p>Yes. If you're a student offering volunteer sessions, the platform logs your hours automatically. You can download or submit verified logs for your school or program.</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">8. How do I find a place to play?</h4>
+          <p>TennisMatch includes a searchable map of local courts — public and private — showing their surface type, location, availability, and user reviews. You can even see where your matched partner prefers to play.</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">9. Is this a coaching service?</h4>
+          <p>Not officially. TennisMatch connects players for hitting practice or basic guidance. While some student-athletes may offer helpful tips, this is not a professional coaching service.</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">10. How do I sign up and get started?</h4>
+          <p>Click "Join Now" on the homepage, create a profile (player or athlete), add your location and preferences, and start browsing matches or court options. You'll be ready to hit the court in minutes!</p>
+        </div>
+      </div>
+    </section>
+    <!-- Login/Signup Section -->
+    <section id="login" class="section form-section">
+      <div id="loginForm" style="display: block;">
+        <h3>Log In to Your Account</h3>
+        <form id="loginFormElement" onsubmit="handleLogin(event)">
+          <label>Email</label>
+          <input required type="email" name="email" id="loginEmail" />
+          <label>Password</label>
+          <input required type="password" name="password" id="loginPassword" />
+          <button type="submit">Log In</button>
+          <button type="button" onclick="showSignupForm()" style="background:#ddd; color:#222; margin-left:1rem;">Create Account</button>
+        </form>
+        <div id="loginError" style="color: #ef4444; margin-top: 1rem; display: none;"></div>
+      </div>
+
+      <div id="signupForm" style="display: none;">
+        <h3>Create Your Account</h3>
+        <form id="signupFormElement" onsubmit="handleSignup(event)">
+          <label>Full Name</label>
+          <input required type="text" name="fullName" id="signupName" />
+          <label>Email</label>
+          <input required type="email" name="email" id="signupEmail" />
+          <label>Password</label>
+          <input required type="password" name="password" id="signupPassword" minlength="6" />
+          <label>Confirm Password</label>
+          <input required type="password" name="confirmPassword" id="signupConfirmPassword" minlength="6" />
+          <label>I am a:</label>
+          <select required name="userType" id="signupUserType">
+            <option value="">Select user type</option>
+            <option value="player">Tennis Player/Mentor</option>
+            <option value="parent">Parent/Guardian</option>
+            <option value="both">Both</option>
+          </select>
+          <button type="submit">Create Account</button>
+          <button type="button" onclick="showLoginForm()" style="background:#ddd; color:#222; margin-left:1rem;">Back to Login</button>
+        </form>
+        <div id="signupError" style="color: #ef4444; margin-top: 1rem; display: none;"></div>
+      </div>
+
+      <div id="userDashboard" style="display: none;">
+        <h3>Welcome, <span id="userName"></span>!</h3>
+        <div style="background: linear-gradient(135deg, #fff 0%, #f0fdf4 100%); border-radius: 15px; padding: 2rem; margin: 2rem 0; border-left: 4px solid #16a34a;">
+          <h4 style="color: #16a34a; margin-top: 0;">Your Account</h4>
+          <p><strong>Email:</strong> <span id="userEmail"></span></p>
+          <p><strong>Account Type:</strong> <span id="userType"></span></p>
+          <p><strong>Member Since:</strong> <span id="memberSince"></span></p>
+          <button onclick="logout()" style="background: #ef4444; color: white; border: none; border-radius: 8px; padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer; margin-top: 1rem;">
+            Log Out
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+
+  <script>
+    // --- Navigation & Section Switching ---
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('active', link.dataset.section === id);
+      });
+      window.scrollTo(0,0);
+    }
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.onclick = e => { e.preventDefault(); showSection(link.dataset.section); };
+    });
+
+    // --- Initialize with Empty Data Arrays ---
+    // Users will create real profiles and courts - no sample data
+    const mockProfiles = [];
+    const mockCourts = [];
+
+    // --- Old Profile Directory Function Replaced by Enhanced Version Above ---
+    function filterProfiles() { renderProfileDirectory(); }
+    // Populate school filter
+    function populateSchoolFilter() {
+      const schools = [...new Set(mockProfiles.map(p => p.school))];
+      const sel = document.getElementById('filterSchool');
+      sel.innerHTML = '<option value="">All Schools</option>' + schools.map(s => `<option>${s}</option>`).join('');
+    }
+    
+    // --- Old Chat Functions Replaced by Enhanced Versions Below ---
+    
+    // --- UTR Field Toggle ---
+    function toggleUTRField(selectElement) {
+      const utrField = document.getElementById('utrField');
+      if (selectElement.value === 'USTA/UTR') {
+        utrField.style.display = 'block';
+        utrField.querySelector('input').required = true;
+      } else {
+        utrField.style.display = 'none';
+        utrField.querySelector('input').required = false;
+      }
+    }
+    // --- Court List Rendering ---
+    function renderCourtList() {
+      const list = document.getElementById('courtList');
+      list.innerHTML = '';
+      
+      if (mockCourts.length === 0) {
+        list.innerHTML = `
+          <div style="text-align: center; padding: 3rem; color: #6b7280; background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); border-radius: 15px; border: 2px dashed #d1d5db;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🎾</div>
+            <h3 style="color: #374151; margin-bottom: 1rem;">No School Courts Yet</h3>
+            <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">Be the first to suggest a tennis court at your school!</p>
+            <p style="font-size: 0.9rem;">Courts suggested by users will appear here for the community to discover.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      mockCourts.forEach(court => {
+        const ratingDisplay = court.rating ? `⭐ ${court.rating} (${court.totalReviews || 0} reviews)` : '';
+        const joinDate = court.createdAt ? new Date(court.createdAt).toLocaleDateString() : '';
+        
+        list.innerHTML += `
+          <div class="court-card">
+            <h4>${court.school}</h4>
+            <div><b>Address:</b> ${court.address}</div>
+            <div class="surface"><b>Surface:</b> ${court.surface}</div>
+            <div><b>Courts:</b> ${court.numCourts}</div>
+            <div><b>Open:</b> ${court.openTimes || 'Unknown'}</div>
+            ${ratingDisplay ? `<div style="color: #facc15; font-weight: 600;">${ratingDisplay}</div>` : ''}
+            <div class="notes">${court.notes}</div>
+            ${joinDate ? `<div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">Added ${joinDate}</div>` : ''}
+          </div>
+        `;
+      });
+    }
+    // --- Old Form Functions Replaced by Enhanced Versions Above ---
+    // --- Zip Code Search Functionality ---
+    
+    // Mock data for free public outdoor tennis courts
+    const publicOutdoorCourts = [
+      // New York
+      { name: "Central Park Tennis Center", address: "Central Park West & 95th St, New York, NY 10025", zipCode: "10025", courts: 30, surface: "Hard", hours: "6:00 AM - 8:00 PM", lat: 40.7851, lng: -73.9683, notes: "Permits required. Online reservation system available." },
+      { name: "Riverside Park Tennis Courts", address: "Riverside Dr & 96th St, New York, NY 10025", zipCode: "10025", courts: 10, surface: "Hard", hours: "Dawn to Dusk", lat: 40.7956, lng: -73.9722, notes: "Free outdoor courts. First come, first served." },
+      { name: "Prospect Park Tennis Center", address: "Prospect Park West & 9th St, Brooklyn, NY 11215", zipCode: "11215", courts: 9, surface: "Hard", hours: "6:00 AM - 10:00 PM", lat: 40.6782, lng: -73.9776, notes: "Seasonal permits available. Lights on select courts." },
+      { name: "McCarren Park Tennis Courts", address: "Nassau Ave & Lorimer St, Brooklyn, NY 11222", zipCode: "11222", courts: 4, surface: "Hard", hours: "6:00 AM - 10:00 PM", lat: 40.7208, lng: -73.9503, notes: "Recently renovated. Free play available." },
+      { name: "Flushing Meadows Corona Park", address: "Flushing Meadows Corona Park, Queens, NY 11368", zipCode: "11368", courts: 8, surface: "Hard", hours: "Dawn to Dusk", lat: 40.7505, lng: -73.8370, notes: "Historic venue. Multiple court surfaces available." },
+      
+      // California  
+      { name: "Griffith Park Tennis Courts", address: "4730 Crystal Springs Dr, Los Angeles, CA 90027", zipCode: "90027", courts: 6, surface: "Hard", hours: "5:00 AM - 10:00 PM", lat: 34.1365, lng: -118.2845, notes: "Reservations recommended. Lighting available." },
+      { name: "Palo Alto Mitchell Park", address: "3700 Middlefield Rd, Palo Alto, CA 94303", zipCode: "94303", courts: 8, surface: "Hard", hours: "Dawn to Dusk", lat: 37.4419, lng: -122.1584, notes: "Free courts. Popular with locals." },
+      { name: "Golden Gate Park Tennis Complex", address: "Golden Gate Park, San Francisco, CA 94117", zipCode: "94117", courts: 21, surface: "Hard", hours: "7:00 AM - 6:00 PM", lat: 37.7694, lng: -122.4862, notes: "Fee required. Lessons available." },
+      { name: "Marina Green Tennis Courts", address: "Marina Blvd, San Francisco, CA 94123", zipCode: "94123", courts: 4, surface: "Hard", hours: "Dawn to Dusk", lat: 37.8044, lng: -122.4381, notes: "Scenic bay views. Windy conditions." },
+      { name: "Balboa Park Tennis Complex", address: "2221 Morley Field Dr, San Diego, CA 92104", zipCode: "92104", courts: 25, surface: "Hard", hours: "Dawn to Dusk", lat: 32.7341, lng: -117.1443, notes: "Large facility. Tournament hosting venue." },
+      
+      // Florida
+      { name: "Miami Beach Tennis Center", address: "1000 West Ave, Miami Beach, FL 33139", zipCode: "33139", courts: 6, surface: "Hard", hours: "8:00 AM - 9:00 PM", lat: 25.7907, lng: -80.1435, notes: "Beachside location. Equipment rental available." },
+      { name: "Crandon Park Tennis Center", address: "6700 Crandon Blvd, Key Biscayne, FL 33149", zipCode: "33149", courts: 26, surface: "Hard", hours: "8:00 AM - 9:00 PM", lat: 25.7081, lng: -80.1581, notes: "Professional facility. Miami Open venue." },
+      { name: "Flamingo Park Tennis Center", address: "1200 12th St, Miami Beach, FL 33139", zipCode: "33139", courts: 19, surface: "Hard", hours: "8:00 AM - 9:00 PM", lat: 25.7823, lng: -80.1373, notes: "Historic courts. Community programs available." },
+      { name: "Bayfront Park Tennis Courts", address: "301 Biscayne Blvd, Miami, FL 33132", zipCode: "33132", courts: 4, surface: "Hard", hours: "6:00 AM - 10:00 PM", lat: 25.7754, lng: -80.1866, notes: "Downtown location. Skyline views." },
+      
+      // Texas
+      { name: "Zilker Park Tennis Center", address: "2100 Barton Springs Rd, Austin, TX 78746", zipCode: "78746", courts: 8, surface: "Hard", hours: "Dawn to Dusk", lat: 30.2672, lng: -97.7731, notes: "Popular park setting. Free courts available." },
+      { name: "Memorial Park Tennis Center", address: "6000 Memorial Loop, Houston, TX 77007", zipCode: "77007", courts: 18, surface: "Hard", hours: "Dawn to Dusk", lat: 29.7633, lng: -95.3950, notes: "Large urban park. Reservation system." },
+      { name: "Fair Park Tennis Center", address: "1300 Robert B Cullum Blvd, Dallas, TX 75210", zipCode: "75210", courts: 12, surface: "Hard", hours: "8:00 AM - 10:00 PM", lat: 32.7767, lng: -96.7589, notes: "Historic venue. Affordable rates." },
+      { name: "McAllister Park Tennis Center", address: "13102 Jones-Maltsberger Rd, San Antonio, TX 78247", zipCode: "78247", courts: 8, surface: "Hard", hours: "Dawn to Dusk", lat: 29.5513, lng: -98.4572, notes: "Family-friendly facility. Lessons offered." },
+      
+      // Illinois
+      { name: "Maggie Daley Park Tennis Courts", address: "337 E Randolph St, Chicago, IL 60601", zipCode: "60601", courts: 12, surface: "Hard", hours: "6:00 AM - 10:00 PM", lat: 41.8827, lng: -87.6233, notes: "Downtown location. Modern facilities." },
+      { name: "Lincoln Park Tennis Courts", address: "2045 N Lincoln Park West, Chicago, IL 60614", zipCode: "60614", courts: 6, surface: "Hard", hours: "Dawn to Dusk", lat: 41.9175, lng: -87.6341, notes: "Lakefront views. Popular with residents." },
+      { name: "Grant Park Tennis Courts", address: "900 S Columbus Dr, Chicago, IL 60605", zipCode: "60605", courts: 8, surface: "Hard", hours: "6:00 AM - 10:00 PM", lat: 41.8755, lng: -87.6244, notes: "Central location. Tournament facilities." },
+      
+      // Massachusetts
+      { name: "Charles River Tennis Courts", address: "Cambridge, MA 02138", zipCode: "02138", courts: 6, surface: "Hard", hours: "Dawn to Dusk", lat: 42.3601, lng: -71.0942, notes: "University area. Scenic river views." },
+      { name: "Franklin Park Tennis Courts", address: "1 Franklin Park Rd, Boston, MA 02121", zipCode: "02121", courts: 10, surface: "Hard", hours: "Dawn to Dusk", lat: 42.3118, lng: -71.0851, notes: "Historic park. Community programs." },
+      { name: "Boston Common Tennis Courts", address: "139 Tremont St, Boston, MA 02111", zipCode: "02111", courts: 4, surface: "Hard", hours: "6:00 AM - 8:00 PM", lat: 42.3555, lng: -71.0640, notes: "Historic location. Heart of the city." },
+      
+      // Washington
+      { name: "Green Lake Tennis Courts", address: "7201 East Green Lake Dr N, Seattle, WA 98115", zipCode: "98115", courts: 4, surface: "Hard", hours: "Dawn to Dusk", lat: 47.6799, lng: -122.3032, notes: "Lakeside setting. Popular jogging area." },
+      { name: "Lincoln Park Tennis Courts", address: "8011 Fauntleroy Way SW, Seattle, WA 98136", zipCode: "98136", courts: 4, surface: "Hard", hours: "Dawn to Dusk", lat: 47.5302, lng: -122.3985, notes: "Puget Sound views. Quiet location." },
+      { name: "Volunteer Park Tennis Courts", address: "1247 15th Ave E, Seattle, WA 98112", zipCode: "98112", courts: 4, surface: "Hard", hours: "Dawn to Dusk", lat: 47.6299, lng: -122.3123, notes: "Capitol Hill area. Historic park." },
+      
+      // Colorado
+      { name: "Washington Park Tennis Courts", address: "701 S Franklin St, Denver, CO 80209", zipCode: "80209", courts: 8, surface: "Hard", hours: "5:00 AM - 11:00 PM", lat: 39.7047, lng: -104.9653, notes: "Popular urban park. Great mountain views." },
+      { name: "City Park Tennis Courts", address: "2001 Colorado Blvd, Denver, CO 80205", zipCode: "80205", courts: 6, surface: "Hard", hours: "Dawn to Dusk", lat: 39.7392, lng: -104.9503, notes: "Near museum district. Family-friendly." },
+      { name: "Cheesman Park Tennis Courts", address: "1599 E 8th Ave, Denver, CO 80218", zipCode: "80218", courts: 4, surface: "Hard", hours: "Dawn to Dusk", lat: 39.7317, lng: -104.9717, notes: "Historic neighborhood. Elevated courts." },
+      
+      // Oregon
+      { name: "Laurelhurst Park Tennis Courts", address: "SE 39th Ave & Stark St, Portland, OR 97214", zipCode: "97214", courts: 4, surface: "Hard", hours: "Dawn to Dusk", lat: 45.5152, lng: -122.6295, notes: "Beautiful historic park. Duck pond nearby." },
+      { name: "Mt. Tabor Park Tennis Courts", address: "SE 60th Ave & Salmon St, Portland, OR 97215", zipCode: "97215", courts: 3, surface: "Hard", hours: "Dawn to Dusk", lat: 45.5134, lng: -122.5934, notes: "Volcanic park setting. City views." },
+      
+      // Georgia
+      { name: "Piedmont Park Tennis Center", address: "1320 Monroe Dr NE, Atlanta, GA 30309", zipCode: "30309", courts: 12, surface: "Hard", hours: "Dawn to Dusk", lat: 33.7879, lng: -84.3733, notes: "Midtown location. Skyline views." },
+      { name: "Grant Park Tennis Courts", address: "537 Park Ave SE, Atlanta, GA 30312", zipCode: "30312", courts: 4, surface: "Hard", hours: "Dawn to Dusk", lat: 33.7409, lng: -84.3733, notes: "Historic neighborhood. Zoo nearby." },
+      
+      // Virginia
+      { name: "Meridian Hill Park Tennis Courts", address: "16th St & Euclid St NW, Washington, DC 20009", zipCode: "20009", courts: 4, surface: "Hard", hours: "Dawn to Dusk", lat: 38.9278, lng: -77.0365, notes: "Historic park. Cascading fountains." },
+      { name: "East Potomac Park Tennis Center", address: "972 Ohio Dr SW, Washington, DC 20024", zipCode: "20024", courts: 24, surface: "Hard", hours: "Dawn to Dusk", lat: 38.8723, lng: -77.0227, notes: "Large facility. Potomac River views." },
+      
+      // Arizona
+      { name: "Steele Indian School Park", address: "300 E Indian School Rd, Phoenix, AZ 85012", zipCode: "85012", courts: 6, surface: "Hard", hours: "5:00 AM - 10:00 PM", lat: 33.4942, lng: -112.0740, notes: "Urban oasis. Desert landscaping." },
+      { name: "Encanto Park Tennis Courts", address: "2605 N 15th Ave, Phoenix, AZ 85007", zipCode: "85007", courts: 8, surface: "Hard", hours: "5:00 AM - 10:00 PM", lat: 33.4734, lng: -112.0879, notes: "Central Phoenix. Lagoon and golf nearby." }
+    ];
+
+    // Zip code to coordinates mapping (simplified for demo)
+    const zipToCoords = {
+      "10001": { lat: 40.7505, lng: -73.9934 }, "10025": { lat: 40.7851, lng: -73.9683 }, "11215": { lat: 40.6782, lng: -73.9776 },
+      "11222": { lat: 40.7208, lng: -73.9503 }, "11368": { lat: 40.7505, lng: -73.8370 }, "90027": { lat: 34.1365, lng: -118.2845 },
+      "94303": { lat: 37.4419, lng: -122.1584 }, "94117": { lat: 37.7694, lng: -122.4862 }, "94123": { lat: 37.8044, lng: -122.4381 },
+      "92104": { lat: 32.7341, lng: -117.1443 }, "33139": { lat: 25.7907, lng: -80.1435 }, "33149": { lat: 25.7081, lng: -80.1581 },
+      "33132": { lat: 25.7754, lng: -80.1866 }, "78746": { lat: 30.2672, lng: -97.7731 }, "77007": { lat: 29.7633, lng: -95.3950 },
+      "75210": { lat: 32.7767, lng: -96.7589 }, "78247": { lat: 29.5513, lng: -98.4572 }, "60601": { lat: 41.8827, lng: -87.6233 },
+      "60614": { lat: 41.9175, lng: -87.6341 }, "60605": { lat: 41.8755, lng: -87.6244 }, "02138": { lat: 42.3601, lng: -71.0942 },
+      "02121": { lat: 42.3118, lng: -71.0851 }, "02111": { lat: 42.3555, lng: -71.0640 }, "98115": { lat: 47.6799, lng: -122.3032 },
+      "98136": { lat: 47.5302, lng: -122.3985 }, "98112": { lat: 47.6299, lng: -122.3123 }, "80209": { lat: 39.7047, lng: -104.9653 },
+      "80205": { lat: 39.7392, lng: -104.9503 }, "80218": { lat: 39.7317, lng: -104.9717 }, "97214": { lat: 45.5152, lng: -122.6295 },
+      "97215": { lat: 45.5134, lng: -122.5934 }, "30309": { lat: 33.7879, lng: -84.3733 }, "30312": { lat: 33.7409, lng: -84.3733 },
+      "20009": { lat: 38.9278, lng: -77.0365 }, "20024": { lat: 38.8723, lng: -77.0227 }, "85012": { lat: 33.4942, lng: -112.0740 },
+      "85007": { lat: 33.4734, lng: -112.0879 }
+    };
+
+    function handleZipCodeKeypress(event) {
+      if (event.key === 'Enter') {
+        searchCourts();
+      }
+    }
+
+    function searchCourts() {
+      const zipCode = document.getElementById('zipCodeInput').value.trim();
+      const statusDiv = document.getElementById('searchStatus');
+      const resultsDiv = document.getElementById('courtResults');
+      const resultsListDiv = document.getElementById('courtResultsList');
+      
+      if (!zipCode) {
+        statusDiv.textContent = "Please enter a zip code";
+        statusDiv.style.color = "#ef4444";
+        return;
+      }
+      
+      statusDiv.textContent = "Searching for courts...";
+      statusDiv.style.color = "#6b7280";
+      
+      // Simulate API call delay
+      setTimeout(() => {
+        const userCoords = zipToCoords[zipCode];
+        
+        if (!userCoords) {
+          statusDiv.textContent = "Zip code not found in our database. Try these example zip codes: 10001, 90027, 94303, 33139, 78746, 60601, 02138, 98115, 80209, 97214, 30309, 20009, 85012";
+          statusDiv.style.color = "#ef4444";
+          resultsDiv.style.display = "none";
+          return;
+        }
+        
+        // Calculate distances and sort
+        const courtsWithDistance = publicOutdoorCourts.map(court => {
+          const distance = calculateDistance(userCoords.lat, userCoords.lng, court.lat, court.lng);
+          return { ...court, distance };
+        }).sort((a, b) => a.distance - b.distance);
+        
+        // Show nearby courts (within 50 miles)
+        const nearbyCourts = courtsWithDistance.filter(court => court.distance <= 50);
+        
+        if (nearbyCourts.length === 0) {
+          statusDiv.textContent = "No free public outdoor courts found within 50 miles";
+          statusDiv.style.color = "#ef4444";
+          resultsDiv.style.display = "none";
+          return;
+        }
+        
+        statusDiv.textContent = `Found ${nearbyCourts.length} free public outdoor courts near ${zipCode}`;
+        statusDiv.style.color = "#16a34a";
+        
+        renderSearchResults(nearbyCourts);
+        resultsDiv.style.display = "block";
+      }, 1000);
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 3959; // Earth's radius in miles
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function renderSearchResults(courts) {
+      const resultsListDiv = document.getElementById('courtResultsList');
+      resultsListDiv.innerHTML = courts.map(court => `
+        <div class="court-card" style="position: relative;">
+          <div style="position: absolute; top: 1rem; right: 1rem; background: linear-gradient(45deg, #3b82f6, #1d4ed8); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">
+            📍 ${court.distance.toFixed(1)} miles
+          </div>
+          <h4>${court.name}</h4>
+          <p style="margin: 0.5rem 0; color: #6b7280; font-size: 0.95rem;">📍 ${court.address}</p>
+          <div style="display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap;">
+            <span class="surface">🎾 ${court.courts} Courts</span>
+            <span style="background: linear-gradient(45deg, #10b981, #059669); color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.9rem; font-weight: 600;">
+              ${court.surface} Surface
+            </span>
+          </div>
+          <div class="notes">
+            <strong>Hours:</strong> ${court.hours}<br>
+            <strong>Details:</strong> ${court.notes}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    // --- User Authentication & Data Persistence ---
+    
+    // Initialize data storage
+    function initializeStorage() {
+      if (!localStorage.getItem('tennisUsers')) {
+        localStorage.setItem('tennisUsers', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('tennisProfiles')) {
+        localStorage.setItem('tennisProfiles', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('tennisCourts')) {
+        localStorage.setItem('tennisCourts', JSON.stringify([]));
+      }
+      // Chat system removed - using direct email contact instead
+    }
+
+    // User management
+    let currentUser = null;
+
+    function handleSignup(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      
+      const name = formData.get('fullName');
+      const email = formData.get('email');
+      const password = formData.get('password');
+      const confirmPassword = formData.get('confirmPassword');
+      const userType = formData.get('userType');
+      
+      // Validation
+      if (password !== confirmPassword) {
+        showError('signupError', 'Passwords do not match');
+        return;
+      }
+      
+      // Check if user already exists
+      const users = JSON.parse(localStorage.getItem('tennisUsers'));
+      if (users.find(user => user.email === email)) {
+        showError('signupError', 'Account with this email already exists');
+        return;
+      }
+      
+      // Create new user
+      const newUser = {
+        id: Date.now(),
+        name: name,
+        email: email,
+        password: password, // In real app, this would be hashed
+        userType: userType,
+        createdAt: new Date().toISOString()
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('tennisUsers', JSON.stringify(users));
+      
+      // Auto login
+      currentUser = newUser;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      showUserDashboard();
+      
+      // Show success message
+      alert('Account created successfully! Welcome to Tennis Connect!');
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
+      
+      const email = formData.get('email');
+      const password = formData.get('password');
+      
+      const users = JSON.parse(localStorage.getItem('tennisUsers'));
+      const user = users.find(u => u.email === email && u.password === password);
+      
+      if (!user) {
+        showError('loginError', 'Invalid email or password');
+        return;
+      }
+      
+      currentUser = user;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      showUserDashboard();
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      showLoginForm();
+      // Refresh to home section
+      showSection('home');
+    }
+
+    function showSignupForm() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'block';
+      document.getElementById('userDashboard').style.display = 'none';
+      clearErrors();
+    }
+
+    function showLoginForm() {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('userDashboard').style.display = 'none';
+      clearErrors();
+    }
+
+    function showUserDashboard() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('userDashboard').style.display = 'block';
+      
+      // Populate user info
+      document.getElementById('userName').textContent = currentUser.name;
+      document.getElementById('userEmail').textContent = currentUser.email;
+      document.getElementById('userType').textContent = getUserTypeDisplay(currentUser.userType);
+      document.getElementById('memberSince').textContent = new Date(currentUser.createdAt).toLocaleDateString();
+      
+      clearErrors();
+    }
+
+    function getUserTypeDisplay(type) {
+      switch(type) {
+        case 'player': return 'Tennis Player/Mentor';
+        case 'parent': return 'Parent/Guardian';
+        case 'both': return 'Player & Parent';
+        default: return type;
+      }
+    }
+
+    function showError(elementId, message) {
+      const errorDiv = document.getElementById(elementId);
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+
+    function clearErrors() {
+      document.getElementById('loginError').style.display = 'none';
+      document.getElementById('signupError').style.display = 'none';
+    }
+
+    function checkAuthStatus() {
+      const savedUser = localStorage.getItem('currentUser');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        showUserDashboard();
+      }
+    }
+
+    // --- Enhanced Profile Management ---
+    function submitProfile(e) {
+      e.preventDefault();
+      
+      if (!currentUser) {
+        alert('Please log in to create a profile');
+        showSection('login');
+        return;
+      }
+      
+      const f = e.target;
+      const newProfile = {
+        id: Date.now(),
+        userId: currentUser.id,
+        name: f.name.value,
+        school: f.school.value,
+        schoolType: f.schoolType.value,
+        level: f.level.value,
+        utrRating: f.utrRating.value || '',
+        year: f.year.value,
+        availability: f.availability.value,
+        contact: f.contact.value,
+        bio: f.bio.value,
+        courtAddress: f.courtAddress.value,
+        numCourts: f.numCourts.value,
+        courtHours: f.courtHours.value,
+        courtNotes: f.courtNotes.value,
+        createdAt: new Date().toISOString(),
+        verified: false,
+        rating: 5.0,
+        totalSessions: 0
+      };
+      
+      // Save to localStorage
+      const profiles = JSON.parse(localStorage.getItem('tennisProfiles'));
+      profiles.push(newProfile);
+      localStorage.setItem('tennisProfiles', JSON.stringify(profiles));
+      
+      // Update mockProfiles for rendering
+      mockProfiles.push(newProfile);
+      
+      populateSchoolFilter();
+      renderProfileDirectory();
+      showSection('find-partner');
+      f.reset();
+      document.getElementById('utrField').style.display = 'none';
+      
+      alert('Profile created successfully! Other users can now find and contact you.');
+    }
+
+    // --- Enhanced Court Management ---
+    function submitCourt(e) {
+      e.preventDefault();
+      
+      if (!currentUser) {
+        alert('Please log in to suggest a court');
+        showSection('login');
+        return;
+      }
+      
+      const f = e.target;
+      const newCourt = {
+        id: Date.now(),
+        userId: currentUser.id,
+        school: f.school.value,
+        address: f.address.value,
+        zipCode: f.zipCode.value,
+        surface: f.surface.value,
+        numCourts: f.numCourts.value,
+        openTimes: f.openTimes.value,
+        notes: f.notes.value,
+        createdAt: new Date().toISOString(),
+        approved: true, // Auto-approve for now
+        rating: 4.5,
+        totalReviews: 0
+      };
+      
+      // Save to localStorage
+      const courts = JSON.parse(localStorage.getItem('tennisCourts'));
+      courts.push(newCourt);
+      localStorage.setItem('tennisCourts', JSON.stringify(courts));
+      
+      // Update mockCourts for rendering
+      mockCourts.push(newCourt);
+      
+      renderCourtList();
+      showSection('find-court');
+      f.reset();
+      
+      alert('Court suggestion submitted successfully! Thank you for helping the community.');
+    }
+
+    // --- Chat System Removed - Direct Email Contact Used Instead ---
+
+    // --- Load Data from Storage ---
+    function loadStoredData() {
+      // Load profiles
+      const storedProfiles = JSON.parse(localStorage.getItem('tennisProfiles'));
+      if (storedProfiles && storedProfiles.length > 0) {
+        // Merge with existing mock data, avoiding duplicates
+        storedProfiles.forEach(profile => {
+          if (!mockProfiles.find(p => p.id === profile.id)) {
+            mockProfiles.push(profile);
+          }
+        });
+      }
+      
+      // Load courts
+      const storedCourts = JSON.parse(localStorage.getItem('tennisCourts'));
+      if (storedCourts && storedCourts.length > 0) {
+        storedCourts.forEach(court => {
+          if (!mockCourts.find(c => c.id === court.id)) {
+            mockCourts.push(court);
+          }
+        });
+      }
+    }
+
+    // --- Enhanced Profile Directory ---
+    function renderProfileDirectory() {
+      const dir = document.getElementById('profileDirectory');
+      dir.innerHTML = '';
+      let filtered = mockProfiles.filter(profile => {
+        const nameMatch = profile.name.toLowerCase().includes((document.getElementById('searchName').value||'').toLowerCase());
+        const school = document.getElementById('filterSchool').value;
+        const schoolType = document.getElementById('filterSchoolType').value;
+        const level = document.getElementById('filterLevel').value;
+        const avail = document.getElementById('filterAvailability').value;
+        return nameMatch &&
+          (!school || profile.school === school) &&
+          (!schoolType || profile.schoolType === schoolType) &&
+          (!level || profile.level === level) &&
+          (!avail || profile.availability === avail);
+      });
+      
+      if (!filtered.length) dir.innerHTML = '<div style="color:#888;">No matching mentors found.</div>';
+      
+      filtered.forEach((profile, index) => {
+        const levelDisplay = profile.level === 'USTA/UTR' ? `${profile.level} (${profile.utrRating})` : profile.level;
+        const verifiedBadge = profile.verified ? '<span style="color: #16a34a; font-size: 0.9rem;">✓ Verified</span>' : '';
+        const ratingDisplay = profile.rating ? `⭐ ${profile.rating.toFixed(1)} (${profile.totalSessions} sessions)` : '';
+        const joinDate = profile.createdAt ? `Member since ${new Date(profile.createdAt).toLocaleDateString()}` : '';
+        
+        dir.innerHTML += `
+          <div class="profile-card">
+            <h3>${profile.name} ${verifiedBadge}</h3>
+            <div class="level">${levelDisplay} &mdash; ${profile.year}</div>
+            <div><b>School:</b> ${profile.school} (${profile.schoolType})</div>
+            <div><b>Availability:</b> ${profile.availability}</div>
+            <div><b>Contact:</b> <span style="color:#2563eb;">${profile.contact}</span></div>
+            ${ratingDisplay ? `<div style="color: #facc15; font-weight: 600;">${ratingDisplay}</div>` : ''}
+            <div class="bio">${profile.bio}</div>
+            <div class="court-info">
+              <h5>🏟️ School Court Access</h5>
+              <div><b>Address:</b> ${profile.courtAddress}</div>
+              <div><b>Courts:</b> ${profile.numCourts} courts</div>
+              <div><b>Hours:</b> ${profile.courtHours}</div>
+              <div><b>Notes:</b> ${profile.courtNotes}</div>
+            </div>
+            ${joinDate ? `<div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">${joinDate}</div>` : ''}
+            <a href="mailto:${profile.contact}?subject=Tennis%20Session%20Request%20-%20Tennis%20Connect&body=Hi%20${profile.name},%0A%0AI%20found%20your%20profile%20on%20Tennis%20Connect%20and%20would%20love%20to%20schedule%20a%20tennis%20session.%0A%0AMy%20current%20level:%20%0APreferred%20times:%20%0ASpecific%20areas%20I'd%20like%20to%20work%20on:%20%0A%0AThanks!%0A%0ABest%20regards" 
+               style="display: inline-block; background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: white; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.2s ease;">
+              📧 Contact Mentor
+            </a>
+          </div>
+        `;
+      });
+    }
+
+    // --- Initial Render ---
+    window.onload = () => {
+      initializeStorage();
+      checkAuthStatus();
+      loadStoredData();
+      populateSchoolFilter();
+      renderProfileDirectory();
+      renderCourtList();
+      updateNavigationUI();
+    };
+
+    // --- Session Tracking and Activity Logging ---
+    function logActivity(action, details = {}) {
+      if (!currentUser) return;
+      
+      const activities = JSON.parse(localStorage.getItem('userActivities') || '[]');
+      const activity = {
+        id: Date.now(),
+        userId: currentUser.id,
+        action: action,
+        details: details,
+        timestamp: new Date().toISOString()
+      };
+      
+      activities.push(activity);
+      localStorage.setItem('userActivities', JSON.stringify(activities));
+    }
+
+    // --- Notification System ---
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        z-index: 10000;
+        max-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease-out;
+      `;
+      
+      if (type === 'success') {
+        notification.style.background = 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
+      } else if (type === 'error') {
+        notification.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+      } else if (type === 'info') {
+        notification.style.background = 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)';
+      }
+      
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 4000);
+    }
+
+    // Add CSS for notifications
+    const notificationStyles = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+    `;
+    
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = notificationStyles;
+    document.head.appendChild(styleSheet);
+
+    // --- Navigation UI Updates ---
+    function updateNavigationUI() {
+      const navButtons = document.querySelectorAll('nav button');
+      navButtons.forEach(button => {
+        const section = button.getAttribute('onclick').match(/'([^']+)'/)[1];
+        
+        // Add authentication requirements
+        if (['create-profile', 'api'].includes(section)) {
+          const originalOnClick = button.getAttribute('onclick');
+          button.setAttribute('onclick', `if (!currentUser) { showNotification('Please log in to access this feature', 'info'); showSection('login'); return; } ${originalOnClick}`);
+        }
+      });
+    }
+
+    // --- Profile Stats and Analytics ---
+    function updateProfileStats(profileId) {
+      const profiles = JSON.parse(localStorage.getItem('tennisProfiles'));
+      const profileIndex = profiles.findIndex(p => p.id === profileId);
+      
+      if (profileIndex !== -1) {
+        profiles[profileIndex].totalSessions = (profiles[profileIndex].totalSessions || 0) + 1;
+        profiles[profileIndex].lastActive = new Date().toISOString();
+        localStorage.setItem('tennisProfiles', JSON.stringify(profiles));
+        
+        // Update mockProfiles for rendering
+        const mockIndex = mockProfiles.findIndex(p => p.id === profileId);
+        if (mockIndex !== -1) {
+          mockProfiles[mockIndex] = profiles[profileIndex];
+        }
+      }
+    }
+
+    // --- Enhanced Court Rating System ---
+    function rateCourt(courtId, rating) {
+      if (!currentUser) {
+        showNotification('Please log in to rate courts', 'info');
+        return;
+      }
+      
+      const courts = JSON.parse(localStorage.getItem('tennisCourts'));
+      const courtIndex = courts.findIndex(c => c.id === courtId);
+      
+      if (courtIndex !== -1) {
+        const court = courts[courtIndex];
+        const currentRating = court.rating || 4.5;
+        const totalReviews = court.totalReviews || 0;
+        
+        // Calculate new average rating
+        const newTotalReviews = totalReviews + 1;
+        const newRating = ((currentRating * totalReviews) + rating) / newTotalReviews;
+        
+        court.rating = Math.round(newRating * 10) / 10;
+        court.totalReviews = newTotalReviews;
+        
+        localStorage.setItem('tennisCourts', JSON.stringify(courts));
+        
+        // Update mockCourts
+        const mockIndex = mockCourts.findIndex(c => c.id === courtId);
+        if (mockIndex !== -1) {
+          mockCourts[mockIndex] = court;
+        }
+        
+        renderCourtList();
+        showNotification('Thank you for rating this court!', 'success');
+        logActivity('court_rated', { courtId, rating });
+      }
+    }
+
+    // --- Data Export Functionality ---
+    function exportUserData() {
+      if (!currentUser) {
+        showNotification('Please log in to export data', 'info');
+        return;
+      }
+      
+      const userData = {
+        user: currentUser,
+        profiles: JSON.parse(localStorage.getItem('tennisProfiles')).filter(p => p.userId === currentUser.id),
+        courts: JSON.parse(localStorage.getItem('tennisCourts')).filter(c => c.userId === currentUser.id),
+        activities: JSON.parse(localStorage.getItem('userActivities') || '[]').filter(a => a.userId === currentUser.id),
+        exportDate: new Date().toISOString()
+      };
+      
+      const dataStr = JSON.stringify(userData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `tennis-connect-data-${currentUser.email}-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      showNotification('Data exported successfully!', 'success');
+      logActivity('data_exported');
+    }
+
+    // --- Search History ---
+    function saveSearchHistory(searchType, query, results) {
+      if (!currentUser) return;
+      
+      const searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+      const search = {
+        id: Date.now(),
+        userId: currentUser.id,
+        type: searchType,
+        query: query,
+        resultCount: results.length,
+        timestamp: new Date().toISOString()
+      };
+      
+      searchHistory.push(search);
+      // Keep only last 50 searches
+      if (searchHistory.length > 50) {
+        searchHistory.splice(0, searchHistory.length - 50);
+      }
+      
+      localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+    }
+
+    // --- Advanced Matching Algorithm ---
+    function getMatchingScore(userProfile, targetProfile) {
+      let score = 0;
+      
+      // Same school bonus
+      if (userProfile.school === targetProfile.school) score += 30;
+      
+      // Similar level bonus
+      const levels = ['Beginner', 'Intermediate', 'Advanced', 'USTA/UTR'];
+      const userLevelIndex = levels.indexOf(userProfile.level);
+      const targetLevelIndex = levels.indexOf(targetProfile.level);
+      const levelDiff = Math.abs(userLevelIndex - targetLevelIndex);
+      score += Math.max(0, 20 - (levelDiff * 5));
+      
+      // Availability overlap
+      if (userProfile.availability === targetProfile.availability) score += 15;
+      
+      // Same school type
+      if (userProfile.schoolType === targetProfile.schoolType) score += 10;
+      
+      return score;
+    }
+
+    // --- Enhanced Profile Suggestions ---
+    function getSuggestedProfiles(userProfile, limit = 5) {
+      return mockProfiles
+        .filter(profile => profile.id !== userProfile.id && profile.userId !== userProfile.userId)
+        .map(profile => ({
+          ...profile,
+          matchScore: getMatchingScore(userProfile, profile)
+        }))
+        .sort((a, b) => b.matchScore - a.matchScore)
+        .slice(0, limit);
+    }
+
+    // Override authentication methods to include notifications and logging
+    const originalHandleSignup = handleSignup;
+    const originalHandleLogin = handleLogin;
+    
+    function handleSignup(event) {
+      const result = originalHandleSignup(event);
+      if (currentUser) {
+        showNotification(`Welcome to Tennis Connect, ${currentUser.name}!`, 'success');
+        logActivity('user_registered');
+      }
+      return result;
+    }
+    
+    function handleLogin(event) {
+      const result = originalHandleLogin(event);
+      if (currentUser) {
+        showNotification(`Welcome back, ${currentUser.name}!`, 'success');
+        logActivity('user_login');
+      }
+      return result;
+    }
+  </script>
+</body>
+</html> 
